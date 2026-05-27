@@ -3,6 +3,7 @@ package com.nexomc.protectionlib.compatibilities
 import com.nexomc.protectionlib.ProtectionCompatibility
 import com.plotsquared.core.plot.Plot
 import org.bukkit.Location
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
@@ -32,6 +33,10 @@ class PlotSquaredCompat(mainPlugin: JavaPlugin, plugin: Plugin) : ProtectionComp
      */
     override fun canUse(player: Player, target: Location): Boolean {
         return target.plotFromLocation()?.isDenied(player.uniqueId) != true
+    }
+
+    override fun canDamage(player: Player, entity: Entity): Boolean {
+        return entity.location.plotFromLocation()?.isDenied(player.uniqueId) != true
     }
 
     private fun Location.plotFromLocation(): Plot? {

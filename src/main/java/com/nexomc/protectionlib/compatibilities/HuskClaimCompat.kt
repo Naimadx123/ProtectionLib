@@ -7,6 +7,7 @@ import net.william278.huskclaims.api.BukkitHuskClaimsAPI
 import net.william278.huskclaims.api.HuskClaimsAPI
 import net.william278.huskclaims.libraries.cloplib.operation.OperationType
 import org.bukkit.Location
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
@@ -46,5 +47,23 @@ class HuskClaimCompat(mainPlugin: JavaPlugin, plugin: BukkitHuskClaims) : Protec
 
         val trustLevel = huskClaimsBukkit.getTrustLevelAt(position, onlineUser)
         return trustLevel.isEmpty || trustLevel.get().flags.contains(OperationType.BLOCK_INTERACT)
+    }
+
+    override fun canDamage(player: Player, entity: Entity): Boolean {
+        val operation = if (entity is Player) {
+            OperationType.PLAYER_DAMAGE_PLAYER
+        } else {
+            OperationType.PLAYER_DAMAGE_ENTITY
+        }
+
+        return hasOperation(player, entity.location, operation)
+    }
+
+    private fun hasOperation(player: Player, location: Location, operation: OperationType): Boolean {
+        val onlineUser = huskClaimsCommon.getOnlineUser(player.uniqueId)
+        val position = huskClaimsBukkit.getPosition(location)
+
+        val trustLevel = huskClaimsBukkit.getTrustLevelAt(position, onlineUser)
+        return trustLevel.isEmpty || trustLevel.get().flags.contains(operation)
     }
 }

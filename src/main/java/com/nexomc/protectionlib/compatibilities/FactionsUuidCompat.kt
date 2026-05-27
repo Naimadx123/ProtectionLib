@@ -2,10 +2,12 @@ package com.nexomc.protectionlib.compatibilities
 
 import com.massivecraft.factions.FactionsPlugin
 import com.massivecraft.factions.listeners.FactionsBlockListener
+import com.massivecraft.factions.listeners.FactionsEntityListener
 import com.massivecraft.factions.listeners.FactionsPlayerListener
 import com.massivecraft.factions.perms.PermissibleActions
 import com.nexomc.protectionlib.ProtectionCompatibility
 import org.bukkit.Location
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
@@ -46,5 +48,14 @@ class FactionsUuidCompat(mainPlugin: JavaPlugin, plugin: FactionsPlugin) : Prote
      */
     override fun canUse(player: Player, target: Location): Boolean {
         return !plugin.worldUtil().isEnabled(target.world) || FactionsPlayerListener.canInteractHere(player, target)
+    }
+
+    /**
+     * @param player Player looking to use an item
+     * @param entity Entity that players trying to damage
+     * @return true if he can use the item at the location
+     */
+    override fun canDamage(player: Player, entity: Entity): Boolean {
+        return !plugin.worldUtil().isEnabled(entity.location.world) || FactionsEntityListener.canDamage(player, entity, false)
     }
 }

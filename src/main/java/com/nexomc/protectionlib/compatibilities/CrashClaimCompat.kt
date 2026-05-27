@@ -5,6 +5,7 @@ import net.crashcraft.crashclaim.CrashClaim
 import net.crashcraft.crashclaim.api.CrashClaimAPI
 import net.crashcraft.crashclaim.permissions.PermissionRoute
 import org.bukkit.Location
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
@@ -51,4 +52,15 @@ class CrashClaimCompat(mainPlugin: JavaPlugin, plugin: CrashClaim) : ProtectionC
         return crashClaim.permissionHelper.bypassManager.isBypass(player.uniqueId) ||
                 crashClaim.getClaim(target)?.hasPermission(player.uniqueId, target, PermissionRoute.INTERACTIONS) != false
     }
+
+    /**
+     * @param player Player looking to use an item
+     * @param entity Entity that players trying to damage
+     * @return true if he can use the item at the location
+     */
+    override fun canDamage(player: Player, entity: Entity): Boolean {
+        return crashClaim.permissionHelper.bypassManager.isBypass(player.uniqueId) ||
+                crashClaim.getClaim(entity.location)?.hasPermission(player.uniqueId, entity.location, PermissionRoute.ENTITIES) != false
+    }
+
 }

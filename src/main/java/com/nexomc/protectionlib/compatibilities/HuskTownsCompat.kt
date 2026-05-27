@@ -6,6 +6,7 @@ import net.william278.husktowns.api.BukkitHuskTownsAPI
 import net.william278.husktowns.api.HuskTownsAPI
 import net.william278.husktowns.libraries.cloplib.operation.OperationType
 import org.bukkit.Location
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
@@ -29,6 +30,16 @@ class HuskTownsCompat(mainPlugin: JavaPlugin, plugin: BukkitHuskTowns) : Protect
 
     override fun canUse(player: Player, target: Location): Boolean {
         return isOperationAllowed(player, target, OperationType.BLOCK_INTERACT)
+    }
+
+    override fun canDamage(player: Player, entity: Entity): Boolean {
+        val type = if (entity is Player) {
+            OperationType.PLAYER_DAMAGE_PLAYER
+        } else {
+            OperationType.PLAYER_DAMAGE_ENTITY
+        }
+
+        return isOperationAllowed(player, entity.location, type)
     }
 
     private fun isOperationAllowed(player: Player, location: Location, type: OperationType): Boolean {

@@ -7,6 +7,9 @@ import com.sk89q.worldguard.WorldGuard
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin
 import com.sk89q.worldguard.protection.flags.Flags
 import org.bukkit.Location
+import org.bukkit.entity.Animals
+import org.bukkit.entity.Entity
+import org.bukkit.entity.Monster
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
@@ -50,6 +53,21 @@ class WorldGuardCompat(mainPlugin: JavaPlugin, plugin: WorldGuardPlugin) : Prote
     override fun canUse(player: Player, target: Location): Boolean {
         val localPlayer = plugin.wrapPlayer(player)
         return WorldGuard.getInstance().platform.regionContainer.createQuery().testBuild(BukkitAdapter.adapt(target), localPlayer, Flags.USE) || hasBypass(player, localPlayer)
+    }
+
+    override fun canDamage(player: Player, entity: Entity): Boolean {
+        val localPlayer = plugin.wrapPlayer(player)
+        val query = WorldGuard.getInstance().platform.regionContainer.createQuery()
+        val location = BukkitAdapter.adapt(entity.location)
+
+        val flag = when (entity) {
+            is Player -> Flags.PVP
+            is Animals -> Flags.DAMAGE_ANIMALS
+            is Monster -> Flags.DAMAGE_ANIMALS
+            else -> Flags.DAMAGE_ANIMALS
+        }
+
+        return query.testState(location, localPlayer, flag) || hasBypass(player, localPlayer)
     }
 
     private fun hasBypass(player: Player, localPlayer: LocalPlayer): Boolean {

@@ -6,6 +6,7 @@ import me.ryanhamshire.GriefPrevention.ClaimPermission
 import me.ryanhamshire.GriefPrevention.GriefPrevention
 import me.ryanhamshire.GriefPrevention.PlayerData
 import org.bukkit.Location
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
@@ -45,6 +46,15 @@ class GriefPreventionCompat(mainPlugin: JavaPlugin, plugin: GriefPrevention) : P
      */
     override fun canUse(player: Player, target: Location): Boolean {
         return checkPermission(player, target, ClaimPermission.Access)
+    }
+
+    /**
+     * @param player Player trying to damage an entity
+     * @param entity Entity that a player is trying to damage
+     * @return true if he can damage the entity
+     */
+    override fun canDamage(player: Player, entity: Entity): Boolean {
+        return checkPermission(player, entity.location, ClaimPermission.Access)
     }
 
     private fun checkPermission(player: Player, target: Location, permission: ClaimPermission): Boolean {

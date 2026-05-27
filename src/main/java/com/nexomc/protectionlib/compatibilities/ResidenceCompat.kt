@@ -5,6 +5,7 @@ import com.bekvon.bukkit.residence.containers.Flags
 import com.bekvon.bukkit.residence.protection.ClaimedResidence
 import com.nexomc.protectionlib.ProtectionCompatibility
 import org.bukkit.Location
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
@@ -51,5 +52,15 @@ class ResidenceCompat(mainPlugin: JavaPlugin, plugin: Residence) : ProtectionCom
     override fun canUse(player: Player, target: Location): Boolean {
         // No single use flag, so just check if player is on their own island
         return canDo(player, target, Flags.use)
+    }
+
+    override fun canDamage(player: Player, entity: Entity): Boolean {
+        val flag = if (entity is Player) {
+            Flags.pvp
+        } else {
+            Flags.damage
+        }
+
+        return canDo(player, entity.location, flag)
     }
 }

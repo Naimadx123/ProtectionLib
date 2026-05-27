@@ -15,6 +15,7 @@ import com.nexomc.protectionlib.compatibilities.WorldGuardCompat
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
@@ -65,6 +66,13 @@ object ProtectionLib {
     fun canUse(player: Player, target: Location): Boolean {
         return runCatching {
             compatibilities.all { it.canUse(player, target) }
+        }.onFailure { if (debug) it.printStackTrace() }.getOrDefault(true)
+    }
+
+    @JvmStatic
+    fun canDamage(player: Player, entity: Entity): Boolean {
+        return runCatching {
+            compatibilities.all { it.canDamage(player, entity) }
         }.onFailure { if (debug) it.printStackTrace() }.getOrDefault(true)
     }
 

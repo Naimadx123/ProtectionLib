@@ -2,7 +2,11 @@ package com.nexomc.protectionlib.compatibilities
 
 import com.nexomc.protectionlib.ProtectionCompatibility
 import org.bukkit.Location
+import org.bukkit.entity.Animals
+import org.bukkit.entity.Entity
+import org.bukkit.entity.Monster
 import org.bukkit.entity.Player
+import org.bukkit.entity.Villager
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 import world.bentobox.bentobox.BentoBox
@@ -50,5 +54,27 @@ class BentoBoxCompat(mainPlugin: JavaPlugin, plugin: BentoBox) : ProtectionCompa
      */
     override fun canUse(player: Player, target: Location): Boolean {
         return !plugin.iwm.inWorld(target) || plugin.islands.locationIsOnIsland(player, target)
+    }
+
+    /**
+     * @param player Player looking to use an item
+     * @param entity Entity that players trying to damage
+     * @return true if he can damage the entity
+     */
+    override fun canDamage(player: Player, entity: Entity): Boolean {
+        return when (entity) {
+            is Animals -> canDo(player, entity.location, Flags.HURT_ANIMALS)
+            is Monster -> canDo(player, entity.location, Flags.HURT_MONSTERS)
+            is Villager -> canDo(player, entity.location, Flags.HURT_VILLAGERS)
+
+            is Player -> when (entity.location.world.name) {
+                "world" -> canDo(player, entity.location, Flags.PVP_OVERWORLD)
+                "world_nether" -> canDo(player, entity.location, Flags.PVP_NETHER)
+                "world_the_end", "world_end" -> canDo(player, entity.location, Flags.PVP_END)
+                else -> true
+            }
+
+            else -> true
+        }
     }
 }

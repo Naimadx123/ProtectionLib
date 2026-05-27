@@ -6,6 +6,8 @@ import me.angeschossen.lands.api.flags.type.Flags
 import me.angeschossen.lands.api.flags.type.RoleFlag
 import me.angeschossen.lands.api.land.LandWorld
 import org.bukkit.Location
+import org.bukkit.entity.Entity
+import org.bukkit.entity.Monster
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
@@ -47,6 +49,16 @@ class LandsCompat(mainPlugin: JavaPlugin, plugin: Plugin) : ProtectionCompatibil
      */
     override fun canUse(player: Player, target: Location): Boolean {
         return hasFlag(target, player, Flags.INTERACT_GENERAL)
+    }
+
+    override fun canDamage(player: Player, entity: Entity): Boolean {
+        val flag = when (entity) {
+            is Player -> Flags.ATTACK_PLAYER
+            is Monster -> Flags.ATTACK_MONSTER
+            else -> Flags.ATTACK_ANIMAL
+        }
+
+        return hasFlag(entity.location, player, flag)
     }
 
     /**

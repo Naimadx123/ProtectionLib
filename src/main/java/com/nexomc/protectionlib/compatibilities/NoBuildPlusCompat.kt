@@ -2,6 +2,7 @@ package com.nexomc.protectionlib.compatibilities
 
 import com.nexomc.protectionlib.ProtectionCompatibility
 import org.bukkit.Location
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
@@ -25,5 +26,9 @@ class NoBuildPlusCompat(mainPlugin: JavaPlugin, plugin: NoBuildPlus) : Protectio
 
     override fun canUse(player: Player, target: Location): Boolean {
         return !plugin.api.canExecute(target.world.name, Flags.use)
+    }
+
+    override fun canDamage(player: Player, entity: Entity): Boolean {
+        return !plugin.api.canExecute(entity.location.world.name, Flags.mob_damage)
     }
 }

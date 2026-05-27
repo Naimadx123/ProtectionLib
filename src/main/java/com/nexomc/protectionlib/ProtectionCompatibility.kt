@@ -1,6 +1,7 @@
 package com.nexomc.protectionlib
 
 import org.bukkit.Location
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
@@ -33,4 +34,11 @@ abstract class ProtectionCompatibility<T : Plugin>(val mainPlugin: JavaPlugin, v
      * @return true if he can use the item at the location
      */
     abstract fun canUse(player: Player, target: Location): Boolean
+
+    /**
+     * @param player Player looking to use an item
+     * @param entity Entity that players trying to damage
+     * @return true if he can use the item at the location
+     */
+    abstract fun canDamage(player: Player, entity: Entity): Boolean
 }
