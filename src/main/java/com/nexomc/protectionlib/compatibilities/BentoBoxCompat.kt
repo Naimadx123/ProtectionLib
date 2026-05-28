@@ -67,11 +67,15 @@ class BentoBoxCompat(mainPlugin: JavaPlugin, plugin: BentoBox) : ProtectionCompa
             is Monster -> canDo(player, entity.location, Flags.HURT_MONSTERS)
             is Villager -> canDo(player, entity.location, Flags.HURT_VILLAGERS)
 
-            is Player -> when (entity.location.world.name) {
-                "world" -> canDo(player, entity.location, Flags.PVP_OVERWORLD)
-                "world_nether" -> canDo(player, entity.location, Flags.PVP_NETHER)
-                "world_the_end", "world_end" -> canDo(player, entity.location, Flags.PVP_END)
-                else -> true
+            is Player -> {
+                val iwm = plugin.iwm
+                val world = entity.location.world
+                when {
+                    iwm.inWorld(world) -> canDo(player, entity.location, Flags.PVP_OVERWORLD)
+                    iwm.isNether(world) -> canDo(player, entity.location, Flags.PVP_NETHER)
+                    iwm.isEnd(world) -> canDo(player, entity.location, Flags.PVP_END)
+                    else -> true
+                }
             }
 
             else -> true

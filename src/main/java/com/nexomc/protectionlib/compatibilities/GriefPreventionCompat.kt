@@ -54,7 +54,10 @@ class GriefPreventionCompat(mainPlugin: JavaPlugin, plugin: GriefPrevention) : P
      * @return true if he can damage the entity
      */
     override fun canDamage(player: Player, entity: Entity): Boolean {
-        return checkPermission(player, entity.location, ClaimPermission.Access)
+        return when (entity) {
+            is Player -> checkPermission(player, entity.location, ClaimPermission.Inventory)
+            else -> checkPermission(player, entity.location, ClaimPermission.Build)
+        }
     }
 
     private fun checkPermission(player: Player, target: Location, permission: ClaimPermission): Boolean {

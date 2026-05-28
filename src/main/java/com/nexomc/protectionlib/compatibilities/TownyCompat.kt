@@ -1,11 +1,14 @@
 package com.nexomc.protectionlib.compatibilities
 
 import com.nexomc.protectionlib.ProtectionCompatibility
+import com.palmergames.bukkit.towny.Towny
 import com.palmergames.bukkit.towny.`object`.TownyPermission
+import com.palmergames.bukkit.towny.utils.CombatUtil
 import com.palmergames.bukkit.towny.utils.PlayerCacheUtil
 import org.bukkit.Location
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
+import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -59,11 +62,6 @@ class TownyCompat(mainPlugin: JavaPlugin, plugin: Plugin) : ProtectionCompatibil
     }
 
     override fun canDamage(player: Player, entity: Entity): Boolean {
-        return PlayerCacheUtil.getCachePermission(
-            player,
-            entity.location,
-            entity.location.block.type,
-            TownyPermission.ActionType.DESTROY
-        )
+        return !CombatUtil.preventDamageCall(player, entity, EntityDamageEvent.DamageCause.ENTITY_ATTACK)
     }
 }

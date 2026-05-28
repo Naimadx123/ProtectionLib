@@ -63,8 +63,7 @@ class WorldGuardCompat(mainPlugin: JavaPlugin, plugin: WorldGuardPlugin) : Prote
         val flag = when (entity) {
             is Player -> Flags.PVP
             is Animals -> Flags.DAMAGE_ANIMALS
-            is Monster -> Flags.DAMAGE_ANIMALS
-            else -> Flags.DAMAGE_ANIMALS
+            else -> return true
         }
 
         return query.testState(location, localPlayer, flag) || hasBypass(player, localPlayer)
